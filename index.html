@@ -771,12 +771,11 @@ body {
     <!-- API KEY BAR -->
     <div class="api-key-bar" style="flex-wrap:wrap; gap:8px;">
       <span style="font-size:18px">🔑</span>
-      <span class="api-key-label">API Key:</span>
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-api-key..." style="max-width:200px"/>
-      <span class="api-key-label">Worker URL:</span>
-      <input type="text" id="workerUrlInput" placeholder="https://xxx.workers.dev" style="max-width:230px; padding:8px 12px; border:1px solid #ddd; border-radius:6px; font-size:13px; font-family:monospace;"/>
+      <span class="api-key-label">Google Gemini API Key:</span>
+      <input type="password" id="apiKeyInput" placeholder="AIza..." style="max-width:300px"/>
       <button class="btn-save-key" onclick="saveApiKey()">Guardar</button>
       <span id="apiKeyStatus" style="font-size:12px; color:#888;"></span>
+      <a href="https://aistudio.google.com/apikey" target="_blank" style="font-size:12px;color:var(--azul-medio);text-decoration:none;">🆓 Obtener clave gratis →</a>
     </div>
 
     <!-- ===================== TAB: POSTS & STORIES ===================== -->
@@ -1114,12 +1113,12 @@ body {
 
       <div class="config-grid">
         <div class="config-card full">
-          <div class="config-label">🔑 API Key de Anthropic</div>
+          <div class="config-label">🔑 API Key de Google Gemini (gratuita)</div>
           <div class="info-alert">
-            ℹ️ Necesitás una API Key de Anthropic para usar la IA. Obtenela gratis en <a href="https://console.anthropic.com" target="_blank" style="color:var(--azul);font-weight:600">console.anthropic.com</a>. La clave se guarda solo en tu navegador.
+            ℹ️ Necesitás una API Key de Google Gemini (gratuita) para usar la IA. Obtenela gratis en <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--azul);font-weight:600">aistudio.google.com/apikey</a>. La clave se guarda solo en tu navegador.
           </div>
           <div style="display:flex;gap:10px;align-items:center">
-            <input type="password" id="apiKeyConfig" class="prompt-area" style="min-height:unset;padding:10px 14px;font-family:monospace;" placeholder="sk-ant-...">
+            <input type="password" id="apiKeyConfig" class="prompt-area" style="min-height:unset;padding:10px 14px;font-family:monospace;" placeholder="AIza...">
             <button class="btn-save-key" style="padding:10px 20px;white-space:nowrap" onclick="saveApiKeyFromConfig()">Guardar clave</button>
           </div>
           <div id="configKeyStatus" style="font-size:12px;color:green;margin-top:8px"></div>
@@ -1226,55 +1225,37 @@ function selectProb(el, group) {
 // API KEY
 // ============================================================
 function saveApiKey() {
-  const key = document.getElementById('apiKeyInput').value.trim();
-  const url = document.getElementById('workerUrlInput').value.trim();
-  let ok = true;
-  if (key.startsWith('sk-ant-')) {
+  const key = document.getElementById("apiKeyInput").value.trim();
+  if (key.length > 10) {
     apiKey = key;
-    localStorage.setItem('grupora_api_key', key);
-  } else if (key) {
-    document.getElementById('apiKeyStatus').textContent = '❌ API Key inválida';
-    document.getElementById('apiKeyStatus').style.color = 'red';
-    ok = false;
-  }
-  if (url.startsWith('https://')) {
-    workerUrl = url;
-    localStorage.setItem('grupora_worker_url', url);
-  } else if (url) {
-    document.getElementById('apiKeyStatus').textContent = '❌ Worker URL inválida (debe empezar con https://)';
-    document.getElementById('apiKeyStatus').style.color = 'red';
-    ok = false;
-  }
-  if (ok && key && url) {
-    document.getElementById('apiKeyStatus').textContent = '✅ Guardado';
-    document.getElementById('apiKeyStatus').style.color = 'green';
+    localStorage.setItem("grupora_api_key", key);
+    document.getElementById("apiKeyStatus").textContent = "✅ Guardada";
+    document.getElementById("apiKeyStatus").style.color = "green";
+  } else {
+    document.getElementById("apiKeyStatus").textContent = "❌ Clave inválida";
+    document.getElementById("apiKeyStatus").style.color = "red";
   }
 }
 
 function saveApiKeyFromConfig() {
-  const val = document.getElementById('apiKeyConfig').value.trim();
-  if (val.startsWith('sk-ant-')) {
+  const val = document.getElementById("apiKeyConfig").value.trim();
+  if (val.length > 10) {
     apiKey = val;
-    localStorage.setItem('grupora_api_key', val);
-    document.getElementById('apiKeyInput').value = val;
-    document.getElementById('configKeyStatus').textContent = '✅ API Key guardada correctamente';
-    document.getElementById('configKeyStatus').style.color = 'green';
+    localStorage.setItem("grupora_api_key", val);
+    document.getElementById("apiKeyInput").value = val;
+    document.getElementById("configKeyStatus").textContent = "✅ API Key guardada";
+    document.getElementById("configKeyStatus").style.color = "green";
   } else {
-    document.getElementById('configKeyStatus').textContent = '❌ La clave debe comenzar con sk-ant-';
-    document.getElementById('configKeyStatus').style.color = 'red';
+    document.getElementById("configKeyStatus").textContent = "❌ Clave inválida";
+    document.getElementById("configKeyStatus").style.color = "red";
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
   if (apiKey) {
-    document.getElementById('apiKeyInput').value = apiKey;
-  }
-  if (workerUrl) {
-    document.getElementById('workerUrlInput').value = workerUrl;
-  }
-  if (apiKey && workerUrl) {
-    document.getElementById('apiKeyStatus').textContent = '✅ Activo';
-    document.getElementById('apiKeyStatus').style.color = 'green';
+    document.getElementById("apiKeyInput").value = apiKey;
+    document.getElementById("apiKeyStatus").textContent = "✅ Activa";
+    document.getElementById("apiKeyStatus").style.color = "green";
   }
 });
 
@@ -1297,35 +1278,30 @@ function getActiveProbs(group) {
 
 function checkApiKey() {
   if (!apiKey) {
-    alert('⚠️ Primero configurá tu API Key de Anthropic en la barra superior o en la sección Configuración.');
+    alert('⚠️ Primero configurá tu API Key de Google Gemini (gratuita) en la barra superior o en la sección Configuración.');
     return false;
   }
   return true;
 }
 
-// URL del Worker de Cloudflare — se configura en la app
-let workerUrl = localStorage.getItem('grupora_worker_url') || '';
-
 async function callClaude(userPrompt, maxTokens = 1500) {
-  if (!workerUrl) {
-    throw new Error('Falta configurar la URL del Worker. Andá a ⚙️ Configuración e ingresá tu Worker URL.');
-  }
-  const response = await fetch(workerUrl, {
+  if (!apiKey) throw new Error('Ingresá tu API Key de Google Gemini en la barra superior.');
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: maxTokens,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userPrompt }]
+      system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+      contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+      generationConfig: { maxOutputTokens: maxTokens, temperature: 0.8 }
     })
   });
   if (!response.ok) {
     const err = await response.json();
-    throw new Error(err.error?.message || 'Error en la API');
+    throw new Error(err.error?.message || 'Error en la API de Gemini');
   }
   const data = await response.json();
-  return data.content.map(b => b.text || '').join('');
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta';
 }
 
 function copyOutput(id) {
